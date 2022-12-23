@@ -10,8 +10,12 @@ const buttonValues = [
   [7, 8, 9, "X"],
   [4, 5, 6, "-"],
   [1, 2, 3, "#"],
-  [0, ".", "="]
+  [0, ".", "="],
 ]
+
+const toLocaleString = (num) => String(num).replace(/(?<!\..*)(\d)(?=(?:\d{3})+(?:\.|$))/g, "$1 ");
+
+const removeSpaces = (num) => num.toString().replace(/\s/g, "")
 
 const App = () => {
 
@@ -21,23 +25,25 @@ const App = () => {
     res: 0,
   });
 
-  const numClickHandler = (event) => {
+  const signClickHandler = (event) => {
     event.preventDefault();
-    const value = event.target.innerHTML;
+  }
 
-    if(calc.num.length < 16) {
-      setCalc({
-        ...calc,
-        num:
-          calc.num === 0 && value === "0"
-            ? "0"
-            : calc.num % 1 === 0
-            ? Number(calc.num + value)
-            : calc.num + value,
-        res: !calc.sign ? 0 : calc.res,
-      });
-    }
-  };
+  const equalsClickHandler = (event) => {
+    event.preventDefault();
+  }
+
+  const percentClickHandler = (event) => {
+    event.preventDefault();
+  }
+
+  const invertClickHandler = (event) => {
+    event.preventDefault();
+  }
+
+  const resetClickHandler = (event) => {
+    event.preventDefault();
+  }
 
   const commaClickHandler = (event) => {
     event.preventDefault();
@@ -49,6 +55,24 @@ const App = () => {
     });
   };
 
+  const numClickHandler = (event) => {
+    event.preventDefault();
+    const value = event.target.innerHTML;
+
+    if(removeSpaces(calc.num).length < 16) {
+      setCalc({
+        ...calc,
+        num:
+          calc.num === 0 && value === "0"
+            ? "0"
+            : removeSpaces(calc.num) % 1 === 0
+            ? toLocaleString(Number(removeSpaces(calc.num + value)))
+            : toLocaleString(calc.num + value),
+        res: !calc.sign ? 0 : calc.res,
+      });
+    }
+  };
+
   return (
     <Wrapper>
       <Screen value={calc.num ? calc.num : calc.res} />
@@ -58,12 +82,11 @@ const App = () => {
             return (
               <Button 
                 key={i}
-                className={button === "=" ? "equals" : ""}
+                className={button === "=" ? "equals" : ""} // classname of button is either equals or empty
                 value={button}
                 onClick={
-                  button === "c"
-                  /*
-                    ? resetClickHandler
+                  button === "C"
+                    ? resetClickHandler // if button is === C than 
                     : button === "+-"
                     ? invertClickHandler
                     : button === "%"
@@ -73,7 +96,6 @@ const App = () => {
                     : button === "/" || button === "X" || button === "-" || button === "+"
                     ? signClickHandler
                     : button === "."
-                  */
                     ? commaClickHandler // triggered if comma is pressed
                     : numClickHandler // triggered if buttons between 0-9 are pressed
                 } 
