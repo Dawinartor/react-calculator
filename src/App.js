@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-
+// asus | eee
 import Wrapper from "./components/Wrapper";
 import Screen from "./components/Screen";
 import ButtonBox from "./components/ButtonBox";
 import Button from "./components/Button";
+
 
 const buttonValues = [
   ["C", "+-", "%", "/"],
@@ -19,11 +20,14 @@ const removeSpaces = (num) => num.toString().replace(/\s/g, "")
 
 const App = () => {
 
+  // const [state, setState] = useState(initialState);
   let [calc, setCalc] = useState({
     sign: "",
     num: 0,
     res: 0,
   });
+
+  console.log(calc);
 
   const signClickHandler = (event) => {
     event.preventDefault();
@@ -42,8 +46,13 @@ const App = () => {
   }
 
   const resetClickHandler = (event) => {
-    event.preventDefault();
-  }
+    setCalc({
+      ...calc,
+      sign: "",
+      num: 0,
+      res: 0,
+    });
+  };
 
   const commaClickHandler = (event) => {
     event.preventDefault();
@@ -55,16 +64,17 @@ const App = () => {
     });
   };
 
-  const numClickHandler = (event) => {
+  const numClickHandler = (event) => { // is fired with each click on numbered button
     event.preventDefault();
     const value = event.target.innerHTML;
+    console.log();
 
     if(removeSpaces(calc.num).length < 16) {
       setCalc({
         ...calc,
         num:
           calc.num === 0 && value === "0"
-            ? "0"
+            ? "0" // avoids to add additional 0 
             : removeSpaces(calc.num) % 1 === 0
             ? toLocaleString(Number(removeSpaces(calc.num + value)))
             : toLocaleString(calc.num + value),
@@ -86,7 +96,7 @@ const App = () => {
                 value={button}
                 onClick={
                   button === "C"
-                    ? resetClickHandler // if button is === C than 
+                    ? resetClickHandler // if button is === C than reset the calculator
                     : button === "+-"
                     ? invertClickHandler
                     : button === "%"
